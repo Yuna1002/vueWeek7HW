@@ -203,10 +203,26 @@
 <script>
 import Modal from 'bootstrap/js/dist/modal'
 export default {
-  props: ['isNew', 'tempProduct', 'updateProduct'],
+  props: {
+    product: {
+      type: Object,
+      default () { return {} }
+    },
+    isNew: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ['updateProduct'],
   data () {
     return {
-      productModal: null
+      productModal: null,
+      tempProduct: {}
+    }
+  },
+  watch: {
+    product () {
+      this.tempProduct = this.product
     }
   },
   methods: {
@@ -218,7 +234,7 @@ export default {
     }
   },
   mounted () {
-    this.productModal = new Modal('this.$refs.productModal')
+    this.productModal = new Modal(this.$refs.productModal)
   }
 }
 

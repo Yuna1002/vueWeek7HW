@@ -56,32 +56,24 @@
         <!-- Modal -->
       <!-- 新增及編輯model -->
 
-        <product-Modal
-          :temp-Product="tempProduct"
-          :update-Product="updateProduct"
+        <ProductModal
+          :product="tempProduct"
+          @update-product="updateProduct"
           :is-new="isNew"
           ref="productModal"
-        ></product-Modal>
+        ></ProductModal>
 
       <!-- 刪除model -->
-      <!-- <div
-        id="delProductModal"
-        ref="delProductModal"
-        class="modal fade"
-        tabindex="-1"
-        aria-labelledby="delProductModalLabel"
-        aria-hidden="true"
-      >
-        <del-Product-Modal
+        <DelProductModal
           :temp-Product="tempProduct"
-          :delete-Product="deleteProduct"
-        ></del-Product-Modal>
-      </div> -->
+          @delete-Product="deleteProduct"
+          ref="delProductModal"
+        ></DelProductModal>
       </div>
 </template>
 <script>
 import ProductModal from '../../components/ProductModal.vue'
-// import DelProductModal from '../../components/DelProductModal.vue'
+import DelProductModal from '../../components/DelProductModal.vue'
 // import Modal from 'bootstrap/js/dist/modal'
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
 export default {
@@ -97,8 +89,8 @@ export default {
     }
   },
   components: {
-    ProductModal
-    // DelProductModal
+    ProductModal,
+    DelProductModal
   },
   methods: {
     getProducts (page = 1) {
@@ -108,7 +100,7 @@ export default {
         .then((res) => {
           // console.log(res.data);
           this.products = res.data.products
-          this.pages = res.data.pagination
+          // this.pages = res.data.pagination
         })
         .catch((err) => {
           alert(err.data.message)
@@ -128,7 +120,7 @@ export default {
         this.$refs.productModal.show()
       } else if (state === 'delete') {
         this.tempProduct = { ...product } // 後端認id
-        // delProductModal.show()
+        this.$refs.delProductModal.show()
       }
     },
     updateProduct () {
@@ -144,7 +136,19 @@ export default {
       })
         .then((res) => {
           alert(res.data.message)
-          // ProductModal.hide()
+          this.$refs.productModal.hide()
+          this.getProducts()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    deleteProduct () {
+      // model裡的確定鍵
+      this.$http
+        .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
+        .then((res) => {
+          this.$refs.delProductModal.hide()
           this.getProducts()
         })
         .catch((err) => {
