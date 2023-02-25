@@ -48,14 +48,13 @@
           </tbody>
         </table>
 
-        <!-- <pagination
+        <BackPagination
           :pages="pages"
-          @change-page="getProducts"
-          :get-products="getProducts"
-        ></pagination> -->
+          @emit-Pages="getProducts"
+        ></BackPagination>
+
         <!-- Modal -->
       <!-- 新增及編輯model -->
-
         <ProductModal
           :product="tempProduct"
           @update-product="updateProduct"
@@ -64,33 +63,33 @@
         ></ProductModal>
 
       <!-- 刪除model -->
-        <DelProductModal
-          :temp-Product="tempProduct"
-          @delete-Product="deleteProduct"
+        <DelModal
+          :item="tempProduct"
+          @del-item="deleteProduct"
           ref="delProductModal"
-        ></DelProductModal>
+        ></DelModal>
       </div>
 </template>
 <script>
 import ProductModal from '../../components/ProductModal.vue'
-import DelProductModal from '../../components/DelProductModal.vue'
-// import Modal from 'bootstrap/js/dist/modal'
+import DelModal from '../../components/DelModal.vue'
+import BackPagination from '../../components/BackPagination.vue'
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
 export default {
   data () {
     return {
-      // productModal: null,
-      // delProductModal: null,
       products: [],
       isNew: false, // 因為開同一個model，判斷是新增/編輯
       tempProduct: {
         imagesUrl: []
-      }
+      },
+      pages: {} // 儲存分頁資料，其中一屬性total_pages
     }
   },
   components: {
     ProductModal,
-    DelProductModal
+    DelModal,
+    BackPagination
   },
   methods: {
     getProducts (page = 1) {
@@ -98,9 +97,8 @@ export default {
       this.$http
         .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/products/?page=${page}`)
         .then((res) => {
-          // console.log(res.data);
           this.products = res.data.products
-          // this.pages = res.data.pagination
+          this.pages = res.data.pagination
         })
         .catch((err) => {
           alert(err.data.message)
@@ -140,7 +138,7 @@ export default {
           this.getProducts()
         })
         .catch((err) => {
-          console.log(err)
+          alert(err.data.message)
         })
     },
     deleteProduct () {
@@ -149,10 +147,11 @@ export default {
         .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
           this.$refs.delProductModal.hide()
+          alert(res.data.message)
           this.getProducts()
         })
         .catch((err) => {
-          console.log(err)
+          alert(err.data.message)
         })
     }
   },

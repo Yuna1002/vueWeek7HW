@@ -12,6 +12,7 @@ import {
 import AllRules from '@vee-validate/rules'
 import { localize, setLocale } from '@vee-validate/i18n'
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
+import { date, toThousands } from './methods/filters'
 
 Object.keys(AllRules).forEach((rule) => {
   defineRule(rule, AllRules[rule])
@@ -25,6 +26,11 @@ configure({
 // 設定預設語系
 setLocale('zh_TW')
 const app = createApp(App)
+
+app.config.globalProperties.$filters = {
+  date,
+  toThousands
+}
 
 app.use(router)
 app.use(VueAxios, axios)
