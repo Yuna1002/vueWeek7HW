@@ -32,7 +32,7 @@ app.config.globalProperties.$filters = {
   toThousands
 }
 
-app.use(router)
+app.use(router) // 只是套用了方法 $route取屬性值 $router取方法，不包含元件RouterLink, RouterView
 app.use(VueAxios, axios)
 app.component('VForm', Form)
   .component('VField', Field)

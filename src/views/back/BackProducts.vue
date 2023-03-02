@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="text-end mt-4">
+          <!-- {{ tempProduct }} -->
           <button class="btn btn-primary" @click="openModel('new')">
             建立新的產品
           </button>
@@ -10,7 +11,7 @@
             <tr>
               <th width="120">分類</th>
               <th>產品名稱</th>
-              <th width="120">原價</th>
+              <!-- <th width="120">原價</th> -->
               <th width="120">售價</th>
               <th width="100">是否啟用</th>
               <th width="120">編輯</th>
@@ -20,8 +21,8 @@
             <tr v-for="product in products" :key="product.id">
               <td>{{product.category}}</td>
               <td>{{ product.title }}</td>
-              <td class="text-end">{{ product.origin_price }}</td>
-              <td class="text-end">{{ product.price }}</td>
+              <!-- <td class="text-end">{{ product.origin_price }}</td> -->
+              <td >{{ product.price }}</td>
               <td>
                 <span class="text-success" v-if="product.is_enabled">啟用</span>
                 <span v-else>未啟用</span>
@@ -58,6 +59,7 @@
         <ProductModal
           :product="tempProduct"
           @update-product="updateProduct"
+          @create-images="createImages"
           :is-new="isNew"
           ref="productModal"
         ></ProductModal>
@@ -81,7 +83,12 @@ export default {
       products: [],
       isNew: false, // 因為開同一個model，判斷是新增/編輯
       tempProduct: {
-        imagesUrl: []
+        imagesUrl: [],
+        origin_price: 0,
+        unit: '顆',
+        element: {},
+        elements: []
+
       },
       pages: {} // 儲存分頁資料，其中一屬性total_pages
     }
@@ -108,7 +115,11 @@ export default {
     openModel (state, product) {
       if (state === 'new') {
         this.tempProduct = {
-          imagesUrl: []
+          imagesUrl: [],
+          origin_price: 0,
+          unit: '顆',
+          element: {},
+          elements: []
         } //* *
         this.isNew = true
         this.$refs.productModal.show()
@@ -138,7 +149,8 @@ export default {
           this.getProducts()
         })
         .catch((err) => {
-          alert(err.data.message)
+          console.log(err)
+          // alert(err.data.message)
         })
     },
     deleteProduct () {
@@ -153,6 +165,10 @@ export default {
         .catch((err) => {
           alert(err.data.message)
         })
+    },
+    createImages () {
+      this.tempProduct.imagesUrl = []
+      this.tempProduct.imagesUrl.push('')
     }
   },
   mounted () {

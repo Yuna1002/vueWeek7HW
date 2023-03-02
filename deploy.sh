@@ -25,6 +25,6 @@ git commit -m 'deploy'
 
 # if you are deploying to https://yuna1002.github.io/vueWeek7HW
 # git push -f git@github.com:yuna1002/vueWeek7HW.git main:gh-pages
-git push -f https://github.com/yuna1002/vueWeek7HW.git main:gh-pages
+git push -f https://github.com/Yuna1002/vueWeek7HW.git main:gh-pages
 
 cd -
