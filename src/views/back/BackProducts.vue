@@ -104,6 +104,7 @@ export default {
           `${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/products/?page=${page}`
         )
         .then((res) => {
+          console.log('產品資料', res.data.products)
           this.products = res.data.products
           this.pages = res.data.pagination
         })
@@ -125,23 +126,27 @@ export default {
         this.$refs.productModal.show()
       } else if (state === 'edit') {
         this.isNew = false
-        this.tempProduct = { ...product }
+        this.tempProduct = {
+          ...product,
+          element: {},
+          elements: []
+        }
         this.$refs.productModal.show()
       } else if (state === 'delete') {
         this.tempProduct = { ...product } // 後端認id
         this.$refs.delProductModal.show()
       }
     },
-    updateProduct () {
+    updateProduct (tempProduct) {
       //* *
       let method = 'post'
       let sub = `${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product`
       if (!this.isNew) {
-        sub = `${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`
+        sub = `${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${tempProduct.id}`
         method = 'put'
       }
       this.$http[method](sub, {
-        data: this.tempProduct
+        data: tempProduct
       })
         .then((res) => {
           alert(res.data.message)
